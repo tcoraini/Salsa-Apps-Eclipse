@@ -1,0 +1,42 @@
+module apps;
+
+/*
+   Actors with this behavior simply create a migrate actor with the specified UAN and first UAL
+   and then migrate to the second UAL.
+*/
+behavior MigrationTime {
+
+	long initialTime;
+	long endTime;
+
+   void before() {
+     standardOutput<-println("Iniciando migração");
+     initialTime = System.currentTimeMillis();
+   }	
+
+   void after() {
+     endTime = System.currentTimeMillis();
+     long elapsed = endTime - initialTime;
+     standardOutput<-println("Time elapsed: " + elapsed + " ms");
+   }
+   
+   void act( String[] args ) {
+
+     try {
+		MigrationTime a = new MigrationTime() at (new UAN(args[0]), null); 
+		
+		a<-before() @
+		a<-migrate(args[1]) @ 
+		a<-migrate(args[2]) @
+		a<-migrate(args[3]) @
+		a<-migrate(args[4]) @
+		a<-after();
+		
+	} catch (ArrayIndexOutOfBoundsException e) {
+		standardOutput<-println("Usage: java apps.MigrationTime <UAN> <DEST_UAL>");
+		standardOutput<-println(e);
+	} catch (MalformedUANException e) {
+		standardError<-println("Error creating UAN: " + e);
+	}
+  }
+}
