@@ -1,0 +1,3 @@
+byte[] load = new byte[100];
+for (int i = 0; i < 100; i++) load[i] = 'T';
+System.out.println("Tamanho: " + load.length);
