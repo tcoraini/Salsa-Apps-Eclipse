@@ -6,34 +6,42 @@ module apps;
 */
 behavior MigrationTime {
 
-	long initialTime;
-	long endTime;
+   long initialTime;
+   long endTime;
+   byte[] load;
+
+   MigrationTime(int nBytes) {
+      load = new byte[nBytes];
+      for (int i = 0; i < nBytes; i++) {
+         load[i] = 'T';
+      }
+      standardOutput<-println("Construído com " + nBytes + " bytes.");
+   }
 
    void before() {
-     standardOutput<-println("Iniciando migração");
+     standardOutput<-println("Iniciando migração com " + load.length + " bytes.");
      initialTime = System.currentTimeMillis();
    }	
 
    void after() {
      endTime = System.currentTimeMillis();
      long elapsed = endTime - initialTime;
-     standardOutput<-println("Time elapsed: " + elapsed + " ms");
+     standardOutput<-println("Migração concluída com " + load.length + " bytes.");
+     standardOutput<-println("Tempo total: " + elapsed + " ms");
    }
    
    void act( String[] args ) {
 
      try {
-		MigrationTime a = new MigrationTime() at (new UAN(args[0]), null); 
+     	int nBytes = Integer.valueOf(args[0]);
+		MigrationTime a = new MigrationTime(nBytes) at (new UAN(args[1]), null); 
 		
 		a<-before() @
-		a<-migrate(args[1]) @ 
-		a<-migrate(args[2]) @
-		a<-migrate(args[3]) @
-		a<-migrate(args[4]) @
+		a<-migrate(args[2]) @ 
 		a<-after();
 		
 	} catch (ArrayIndexOutOfBoundsException e) {
-		standardOutput<-println("Usage: java apps.MigrationTime <UAN> <DEST_UAL>");
+		standardOutput<-println("Usage: java apps.MigrationTime <NBYTES> <UAN> <DEST_UAL>");
 		standardOutput<-println(e);
 	} catch (MalformedUANException e) {
 		standardError<-println("Error creating UAN: " + e);

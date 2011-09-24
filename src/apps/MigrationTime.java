@@ -172,6 +172,12 @@ public class MigrationTime extends UniversalActor  {
 		}
 	}
 
+	public UniversalActor construct (int nBytes) {
+		Object[] __arguments = { new Integer(nBytes) };
+		this.send( new Message(this, this, "construct", __arguments, null, null) );
+		return this;
+	}
+
 	public UniversalActor construct() {
 		Object[] __arguments = { };
 		this.send( new Message(this, this, "construct", __arguments, null, null) );
@@ -266,11 +272,26 @@ public class MigrationTime extends UniversalActor  {
 
 		long initialTime;
 		long endTime;
+		byte[] load;
+		void construct(int nBytes){
+			load = new byte[nBytes];
+			for (int i = 0; i<nBytes; i++){
+				load[i] = 'T';
+			}
+						{
+				// standardOutput<-println("Construído com "+nBytes+" bytes.")
+				{
+					Object _arguments[] = { "Construído com "+nBytes+" bytes." };
+					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
+					__messages.add( message );
+				}
+			}
+		}
 		public void before() {
 			{
-				// standardOutput<-println("Iniciando migração")
+				// standardOutput<-println("Iniciando migração com "+load.length+" bytes.")
 				{
-					Object _arguments[] = { "Iniciando migração" };
+					Object _arguments[] = { "Iniciando migração com "+load.length+" bytes." };
 					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
 					__messages.add( message );
 				}
@@ -281,9 +302,17 @@ public class MigrationTime extends UniversalActor  {
 			endTime = System.currentTimeMillis();
 			long elapsed = endTime-initialTime;
 			{
-				// standardOutput<-println("Time elapsed: "+elapsed+" ms")
+				// standardOutput<-println("Migração concluída com "+load.length+" bytes.")
 				{
-					Object _arguments[] = { "Time elapsed: "+elapsed+" ms" };
+					Object _arguments[] = { "Migração concluída com "+load.length+" bytes." };
+					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
+					__messages.add( message );
+				}
+			}
+			{
+				// standardOutput<-println("Tempo total: "+elapsed+" ms")
+				{
+					Object _arguments[] = { "Tempo total: "+elapsed+" ms" };
 					Message message = new Message( self, standardOutput, "println", _arguments, null, null );
 					__messages.add( message );
 				}
@@ -291,56 +320,36 @@ public class MigrationTime extends UniversalActor  {
 		}
 		public void act(String[] args) {
 			try {
-				MigrationTime a = ((MigrationTime)new MigrationTime(new UAN(args[0]), null,this).construct());
+				int nBytes = Integer.valueOf(args[0]);
+				MigrationTime a = ((MigrationTime)new MigrationTime(new UAN(args[1]), null,this).construct(nBytes));
 				{
 					Token token_3_0 = new Token();
 					Token token_3_1 = new Token();
-					Token token_3_2 = new Token();
-					Token token_3_3 = new Token();
-					Token token_3_4 = new Token();
 					// a<-before()
 					{
 						Object _arguments[] = {  };
 						Message message = new Message( self, a, "before", _arguments, null, token_3_0 );
 						__messages.add( message );
 					}
-					// a<-migrate(args[1])
-					{
-						Object _arguments[] = { args[1] };
-						Message message = new Message( self, a, "migrate", _arguments, token_3_0, token_3_1 );
-						__messages.add( message );
-					}
 					// a<-migrate(args[2])
 					{
 						Object _arguments[] = { args[2] };
-						Message message = new Message( self, a, "migrate", _arguments, token_3_1, token_3_2 );
-						__messages.add( message );
-					}
-					// a<-migrate(args[3])
-					{
-						Object _arguments[] = { args[3] };
-						Message message = new Message( self, a, "migrate", _arguments, token_3_2, token_3_3 );
-						__messages.add( message );
-					}
-					// a<-migrate(args[4])
-					{
-						Object _arguments[] = { args[4] };
-						Message message = new Message( self, a, "migrate", _arguments, token_3_3, token_3_4 );
+						Message message = new Message( self, a, "migrate", _arguments, token_3_0, token_3_1 );
 						__messages.add( message );
 					}
 					// a<-after()
 					{
 						Object _arguments[] = {  };
-						Message message = new Message( self, a, "after", _arguments, token_3_4, null );
+						Message message = new Message( self, a, "after", _arguments, token_3_1, null );
 						__messages.add( message );
 					}
 				}
 			}
 			catch (ArrayIndexOutOfBoundsException e) {
 				{
-					// standardOutput<-println("Usage: java apps.MigrationTime <UAN> <DEST_UAL>")
+					// standardOutput<-println("Usage: java apps.MigrationTime <NBYTES> <UAN> <DEST_UAL>")
 					{
-						Object _arguments[] = { "Usage: java apps.MigrationTime <UAN> <DEST_UAL>" };
+						Object _arguments[] = { "Usage: java apps.MigrationTime <NBYTES> <UAN> <DEST_UAL>" };
 						Message message = new Message( self, standardOutput, "println", _arguments, null, null );
 						__messages.add( message );
 					}

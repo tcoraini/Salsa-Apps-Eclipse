@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="Salsa">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../desenvolvimento/eclipse/eclipse"/>
+    <property name="string_prompt" value="${string_prompt}"/>
+    <property name="string_prompt::5050" value="${string_prompt::5050}"/>
+    <property name="file_prompt:file:/home/tcoraini/workspace-akka/Salsa/src/examples/" value="${file_prompt:file:/home/tcoraini/workspace-akka/Salsa/src/examples/}"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="Salsa.classpath">
+        <pathelement location="bin"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Salsa.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="EchoAgent">
+        <java classname="examples.ping.EchoAgent" failonerror="true" fork="yes">
+            <jvmarg line="-Duan=uan://localhost:3030/actor"/>
+            <arg line="rmsp://127.0.1.1:4040/actor"/>
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Ping">
+        <java classname="examples.ping.Ping" failonerror="true" fork="yes">
+            <arg line="uan://localhost:3030/actor"/>
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Fibonacci">
+        <java classname="examples.fibonacci.Fibonacci" failonerror="true" fork="yes">
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Salsa Theater">
+        <java classname="wwc.messaging.Theater" failonerror="true" fork="yes">
+            <arg line="${string_prompt::5050}"/>
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Agent">
+        <java classname="examples.migration.Agent" failonerror="true" fork="yes">
+            <arg line="uan://localhost:3030/agentA"/>
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Salsa Naming Server">
+        <java classname="wwc.naming.WWCNamingServer" failonerror="true" fork="yes">
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Migrate">
+        <java classname="examples.migration.Migrate" failonerror="true" fork="yes">
+            <arg line="uan://localhost:3030/agentA rmsp://localhost:4040/agentA"/>
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+    <target name="Salsa Compiler">
+        <java classname="salsac.SalsaCompiler" failonerror="true" fork="yes">
+            <arg line="${file_prompt:file:/home/tcoraini/workspace-akka/Salsa/src/examples/}"/>
+            <classpath refid="Salsa.classpath"/>
+        </java>
+    </target>
+</project>
